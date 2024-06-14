@@ -14,9 +14,7 @@ const fs = require("fs");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const morgan = require("morgan");
-
 const paymentWebhookRoutes = require("./routes/paymentWebhook");
-
 const upload = require("./config/multerConfig");
 const brandsRoutes = require("./routes/brandsRoutes");
 const eventsRoutes = require("./routes/eventsRoutes");
@@ -34,20 +32,20 @@ const ordersRoutes = require("./routes/ordersRoutes");
 const displaymanagerRoutes = require("./routes/displayManagerRoutes");
 const noticeRoutes = require("./routes/noticeRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
-//
 const recentRouters = require("./routes/recentRoutes");
 const companyinfoRoutes = require("./routes/companyinfoRoutes");
 const faqRoutes = require("./routes/faqRoutes");
 const termsmallRoutes = require("./routes/termsmallRoutes");
+const searchRoutes = require("./routes/searchRoutes");
 
-// middleware
+//middleware
 app.use(morgan("dev")); // morgan 사용 설정, 모든 요청 로그를 'dev' 포맷으로 출력
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 app.use(express.static("uploads"));
 
-//라우트 사용
+//Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/brands", brandsRoutes);
 app.use("/api/events", eventsRoutes);
@@ -68,6 +66,7 @@ app.use("/api/recent", recentRouters);
 app.use("/api/notice", noticeRoutes);
 app.use("/api/companyinfo", companyinfoRoutes);
 app.use("/api/termsmall", termsmallRoutes);
+app.use("/api/search", searchRoutes);
 //
 app.use("/api/webhook", paymentWebhookRoutes);
 

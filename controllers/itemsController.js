@@ -1,7 +1,7 @@
 //controllers/itemsController.js;
 const express = require("express");
 const router = express.Router();
-const db = require("../config/db-dev");
+const db = require("../config/db");
 const itemsController = require("../controllers/itemsController");
 const upload = require("../config/multerConfig");
 
@@ -17,7 +17,7 @@ exports.mainPageItems = (req, res) => {
   });
 };
 
-// 상품명으로 검색
+// 상품검색
 exports.itemSearch = (req, res) => {
   let sql = "SELECT * FROM item WHERE itemname LIKE ? ORDER BY idx DESC;";
   db.query(sql, [`%${req.query.keyword}%`], (err, items) => {
@@ -29,10 +29,6 @@ exports.itemSearch = (req, res) => {
   });
 };
 
-
-
-
-
 // 관리자/사용자페이지 상품목록
 exports.goodsManager = (req, res) => {
   const page = parseInt(req.query.page, 10) || 1;
@@ -42,6 +38,9 @@ exports.goodsManager = (req, res) => {
   const categoryCode1 = req.query.categoryCode1;
   const categoryCode2 = req.query.categoryCode2;
   const startNum = (page - 1) * offset;
+  //
+  // const searchType = req.query.searchType;
+  // const searchQuery = req.query.searchQuery;
 
   let whereClause = " WHERE 1=1";
   let queryParams = [];
@@ -56,25 +55,32 @@ exports.goodsManager = (req, res) => {
     queryParams.push(categoryCode2);
   }
 
- if (itembrand_en && itembrand_en !== "null") {
-   whereClause += " AND itembrand_en = ?";
-   queryParams.push(itembrand_en);
- }
-
-
   if (type === "BEST" || type === "NEW") {
     whereClause += ` AND labels LIKE '%${type}%'`;
   } else if (type === "SALE") {
     whereClause += " AND sale <> 0";
   }
 
+// // 기존 검색 조건 설정 코드...
+//   if (searchType && searchQuery) {
+//     if (searchType === "itembrand") {
+//       whereClause += " AND (itembrand LIKE ? OR itembrand_en LIKE ?)";
+//       queryParams.push(`%${searchQuery}%`, `%${searchQuery}%`);
+//     } else if (searchType === "itemCode") {
+//       whereClause += " AND itemCode LIKE ?";
+//       queryParams.push(`%${searchQuery}%`);
+//     } else if (searchType === "itemname") {
+//       whereClause += " AND (itemname LIKE ? OR itemname_en LIKE ?)";
+//       queryParams.push(`%${searchQuery}%`, `%${searchQuery}%`);
+//     }
+//   }
 
 
-  let sql = `SELECT count(idx) AS cnt FROM item${whereClause};`;
-  console.log("Final SQL Query:", sql);
+  let countSQL = `SELECT count(idx) AS cnt FROM item${whereClause};`;
+  console.log("Final SQL Query:", countSQL);
   console.log("Query Parameters:", queryParams);
 
-  db.query(sql, queryParams, (err, data) => {
+  db.query(countSQL, queryParams, (err, data) => {
     if (err) {
       console.error(err);
       return res.status(500).send({ message: "Database query error" });
@@ -99,8 +105,6 @@ exports.goodsManager = (req, res) => {
     });
   });
 };
-
-
 
 //상품코드생성기
 exports.generateCode = (req, res) => {
@@ -156,15 +160,17 @@ exports.addItem = (req, res) => {
   const categoryCode2 = req.body.categoryCode2;
 
   // 파일이 첨부되었는지 확인하고, 없으면 기본값을 null로 설정
-  const filename = req.files && req.files.attach ? req.files.attach[0].filename : null;
-  const filename2 = req.files && req.files.attach2 ? req.files.attach2[0].filename : null;
-  const filename3 = req.files && req.files.attach3 ? req.files.attach3[0].filename : null;
-
+  const filename =
+    req.files && req.files.attach ? req.files.attach[0].filename : null;
+  const filename2 =
+    req.files && req.files.attach2 ? req.files.attach2[0].filename : null;
+  const filename3 =
+    req.files && req.files.attach3 ? req.files.attach3[0].filename : null;
 
   let sql =
     "INSERT INTO item (itemname, itemname_en, itembrand, itembrand_en, itemCategory1, itemCategory2, categoryCode1, categoryCode2, stock_status, itemCode, price, pricemonthly, discount, sale, labels, attach, attach2, attach3, contents, regdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW());";
 
-    db.query(
+  db.query(
     sql,
     [
       itemname,
@@ -223,56 +229,49 @@ exports.getItem = (req, res) => {
   });
 };
 
-
 // 이미지 삭제 기능
 exports.deleteImage = (req, res) => {
   const { idx } = req.params;
 
   // 먼저 데이터베이스에서 해당 상품의 정보를 조회
-  db.query(
-    "SELECT filename FROM item WHERE idx = ?",
-    [idx],
-    (err, results) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send({ error: err.message });
-      }
-
-      if (
-        results.length > 0 &&
-        results[0].filename &&
-        results[0].filename !== null
-      ) {
-        const filePath = `./uploads/items/${results[0].filename}`;
-
-        // 파일 시스템에서 파일 삭제
-        const fs = require("fs");
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.error(err);
-            return res.status(500).send({ error: "Failed to delete the file" });
-          }
-
-          // 파일 삭제 성공 후, 데이터베이스에서 파일명 업데이트
-          db.query(
-            "UPDATE item SET filename = NULL WHERE idx = ?",
-            [idx],
-            (err) => {
-              if (err) {
-                console.error(err);
-                return res
-                  .status(500)
-                  .send({ error: "Database update failed" });
-              }
-              res.send({ status: 200, message: "이미지가 삭제되었습니다." });
-            }
-          );
-        });
-      } else {
-        res.status(404).send({ error: "No file to delete or already deleted" });
-      }
+  db.query("SELECT filename FROM item WHERE idx = ?", [idx], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({ error: err.message });
     }
-  );
+
+    if (
+      results.length > 0 &&
+      results[0].filename &&
+      results[0].filename !== null
+    ) {
+      const filePath = `./uploads/items/${results[0].filename}`;
+
+      // 파일 시스템에서 파일 삭제
+      const fs = require("fs");
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send({ error: "Failed to delete the file" });
+        }
+
+        // 파일 삭제 성공 후, 데이터베이스에서 파일명 업데이트
+        db.query(
+          "UPDATE item SET filename = NULL WHERE idx = ?",
+          [idx],
+          (err) => {
+            if (err) {
+              console.error(err);
+              return res.status(500).send({ error: "Database update failed" });
+            }
+            res.send({ status: 200, message: "이미지가 삭제되었습니다." });
+          }
+        );
+      });
+    } else {
+      res.status(404).send({ error: "No file to delete or already deleted" });
+    }
+  });
 };
 
 // 상품 수정
@@ -310,10 +309,10 @@ exports.updateItem = (req, res) => {
     updates.push("itembrand = ?");
     values.push(itembrand);
   }
-    if (itembrand_en) {
-      updates.push("itembrand_en = ?");
-      values.push(itembrand_en);
-    }
+  if (itembrand_en) {
+    updates.push("itembrand_en = ?");
+    values.push(itembrand_en);
+  }
   if (category) {
     updates.push("category = ?");
     values.push(category);
@@ -334,22 +333,22 @@ exports.updateItem = (req, res) => {
     updates.push("pricemonthly = ?");
     values.push(pricemonthly);
   }
-    if (contents) {
-      updates.push("contents = ?");
-      values.push(contents);
-    }
-    if (discount) {
-      updates.push("discount = ?");
-      values.push(discount);
-    }
-    if (sale) {
-        updates.push("sale = ?");
-        values.push(sale);
-      }
-       if (labels) {
-         updates.push("labels = ?");
-         values.push(labels);
-       }
+  if (contents) {
+    updates.push("contents = ?");
+    values.push(contents);
+  }
+  if (discount) {
+    updates.push("discount = ?");
+    values.push(discount);
+  }
+  if (sale) {
+    updates.push("sale = ?");
+    values.push(sale);
+  }
+  if (labels) {
+    updates.push("labels = ?");
+    values.push(labels);
+  }
 
   if (filename) {
     updates.push("attach = ?");
@@ -359,7 +358,6 @@ exports.updateItem = (req, res) => {
     updates.push("contents = ?");
     values.push(contents);
   }
-
 
   sql += updates.join(", ");
   sql += ", regdate = now() ";

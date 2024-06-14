@@ -1,6 +1,6 @@
 //controllers/dashboardController.js
 const bcrypt = require("bcrypt");
-const db = require("../config/db-dev");
+const db = require("../config/db");
 const saltRounds = 10;
 
 // 할 일 목록 조회

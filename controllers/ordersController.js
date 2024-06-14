@@ -47,6 +47,22 @@ exports.getOrders = (req, res) => {
     });
 };
 
+exports.getOrderDetails = (req, res) => {
+  const { idx } = req.params;
+
+  const query = `SELECT * FROM orders WHERE idx = ?;`;
+  db.query(query, [idx], (err, results) => {
+    if (err) {
+      return res.status(500).send({ message: "서버 오류", error: err });
+    }
+    if (results.length > 0) {
+      res.json({ order: results[0] });
+    } else {
+      res.status(404).send({ message: "주문을 찾을 수 없습니다." });
+    }
+  });
+};
+
 // 주문 삭제
 exports.deleteOrder = (req, res) => {
     const idx = req.params.idx; // URL로부터 idx 값을 가져옴

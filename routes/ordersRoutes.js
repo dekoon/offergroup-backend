@@ -9,5 +9,7 @@ router.get("/ordersManager", myorderController.getOrders);
 // 주문 삭제
 router.delete("/delete/:idx", myorderController.deleteOrder);
 
+router.get("/getOrderDetails/:idx", myorderController.getOrderDetails);
+
 
 module.exports = router;

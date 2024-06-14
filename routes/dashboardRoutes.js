@@ -1,5 +1,5 @@
 // routes/dashboardRouters.js
-const db = require("../config/db-dev"); // DB 설정 가져오기
+const db = require("../config/db"); // DB 설정 가져오기
 const upload = require("../config/multerConfig");
 const express = require("express");
 const router = express.Router();
