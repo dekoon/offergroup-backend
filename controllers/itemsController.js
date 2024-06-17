@@ -55,25 +55,31 @@ exports.goodsManager = (req, res) => {
     queryParams.push(categoryCode2);
   }
 
+   if (itembrand_en && itembrand_en !== "null") {
+     whereClause += " AND itembrand_en = ?";
+     queryParams.push(itembrand_en);
+   }
+
   if (type === "BEST" || type === "NEW") {
     whereClause += ` AND labels LIKE '%${type}%'`;
   } else if (type === "SALE") {
     whereClause += " AND sale <> 0";
   }
 
+
 // // 기존 검색 조건 설정 코드...
-//   if (searchType && searchQuery) {
-//     if (searchType === "itembrand") {
-//       whereClause += " AND (itembrand LIKE ? OR itembrand_en LIKE ?)";
-//       queryParams.push(`%${searchQuery}%`, `%${searchQuery}%`);
-//     } else if (searchType === "itemCode") {
-//       whereClause += " AND itemCode LIKE ?";
-//       queryParams.push(`%${searchQuery}%`);
-//     } else if (searchType === "itemname") {
-//       whereClause += " AND (itemname LIKE ? OR itemname_en LIKE ?)";
-//       queryParams.push(`%${searchQuery}%`, `%${searchQuery}%`);
-//     }
-//   }
+  // if (searchType && searchQuery) {
+  //   if (searchType === "itembrand") {
+  //     whereClause += " AND (itembrand LIKE ? OR itembrand_en LIKE ?)";
+  //     queryParams.push(`%${searchQuery}%`, `%${searchQuery}%`);
+  //   } else if (searchType === "itemCode") {
+  //     whereClause += " AND itemCode LIKE ?";
+  //     queryParams.push(`%${searchQuery}%`);
+  //   } else if (searchType === "itemname") {
+  //     whereClause += " AND (itemname LIKE ? OR itemname_en LIKE ?)";
+  //     queryParams.push(`%${searchQuery}%`, `%${searchQuery}%`);
+  //   }
+  // }
 
 
   let countSQL = `SELECT count(idx) AS cnt FROM item${whereClause};`;

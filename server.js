@@ -37,6 +37,7 @@ const companyinfoRoutes = require("./routes/companyinfoRoutes");
 const faqRoutes = require("./routes/faqRoutes");
 const termsmallRoutes = require("./routes/termsmallRoutes");
 const searchRoutes = require("./routes/searchRoutes");
+const adminsRoutes = require("./routes/adminsRoutes");
 
 //middleware
 app.use(morgan("dev")); // morgan 사용 설정, 모든 요청 로그를 'dev' 포맷으로 출력
@@ -67,6 +68,7 @@ app.use("/api/notice", noticeRoutes);
 app.use("/api/companyinfo", companyinfoRoutes);
 app.use("/api/termsmall", termsmallRoutes);
 app.use("/api/search", searchRoutes);
+app.use("/api/admin", adminsRoutes);
 //
 app.use("/api/webhook", paymentWebhookRoutes);
 

@@ -16,6 +16,10 @@ router.get("/brandinfo/:brandEnName", brandsController.getbrandinfo);
 // 관리자 페이지에서 브랜드 목록 보이기
 router.get("/brandsManager", brandsController.brandsManager);
 
+// 관리자 페이지에서 브랜드 목록 보이기
+router.get("/brandsList", brandsController.brandsList);
+
+
 // 브랜드 등록
 router.post(
   "/addBrand",

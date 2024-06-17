@@ -4,7 +4,7 @@ const db = require("../config/db");
 const upload = require("../config/multerConfig");
 const saltRounds = 10;
 
-// 사용자 브랜드 목록가져오기
+// 브랜드 목록가져오기
 exports.getAllBrands = (req, res) => {
   let sql = "SELECT * FROM brands;";
   db.query(sql, (err, brands) => {
@@ -29,6 +29,32 @@ exports.getbrandinfo = (req, res) => {
       res.status(404).send({ message: "Brand not found" });
     } else {
       res.send(results[0]);
+    }
+  });
+};
+
+
+
+exports.brandsList = (req, res) => {
+  let whereClause = "";
+  const searchQuery = req.query.searchQuery;
+  const select = req.query.select;
+
+  if (searchQuery) {
+    if (select === "brand_name_en" || select === "brand_name_ko") {
+      whereClause = `WHERE ${select} LIKE '%${searchQuery}%'`;
+    } else if (select === "" || select === "all") {
+      whereClause = `WHERE brand_name_en LIKE '%${searchQuery}%' OR brand_name_ko LIKE '%${searchQuery}%'`;
+    }
+  }
+
+  let sql = `SELECT * FROM brands ${whereClause} ORDER BY idx DESC;`; // 제거된 LIMIT
+  db.query(sql, (err, brands) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send({ error: err.message });
+    } else {
+      res.send(brands); // 페이지 정보 제거
     }
   });
 };
