@@ -25,8 +25,11 @@ router.get("/selectable_Ftd_Item", displayManagerController.getSelectable_Ftd_It
 router.put("/item/:itemId/add_Ftd_Item", displayManagerController.add_Ftd_Item);
 router.put("/item/:itemId/remove_Ftd_Item", displayManagerController.remove_Ftd_Item);
 
-//router.post("/update_Main_display_Ftd_items", displayManagerController.update_Main_display_Ftd_items);
 //
+router.get("/selected_Coupon", displayManagerController.getSelected_Coupon);
+router.get("/selectable_Coupon", displayManagerController.getSelectable_Coupon);
+router.put("/coupon/:couponId/add_Coupon", displayManagerController.add_Coupon);
+router.put("/coupon/:couponId/remove_Coupon", displayManagerController.remove_Coupon);
 
 
 module.exports = router;

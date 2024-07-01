@@ -10,7 +10,7 @@ exports.getSelected_Ftd_Item = (req, res) => {
     "SELECT idx, itemname, itemname_en, price, sale, attach, main_ftd_display, main_display_title, main_display_summary FROM item WHERE main_ftd_display = 1 ORDER BY idx DESC;";
   db.query(sql, (err, results) => {
     if (err) {
-      console.error("Database error in getSelectable_Ftd_items:", err);
+      console.error("Database error in getSelected_Ftd_Item:", err);
       res.status(500).send({ error: err.message });
     } else {
       res.send(results);
@@ -35,12 +35,12 @@ exports.getSelectable_Ftd_Item = (req, res) => {
 
   db.query(countSql, (err, countResults) => {
     if (err) {
-      console.error("Database error in getSelectableFtdItem count:", err);
+      console.error("Database error in getSelectable_Ftd_Item count:", err);
       res.status(500).send({ error: err.message });
     } else {
       db.query(sql, [offset, limit], (err, results) => {
         if (err) {
-          console.error("Database error in getSelectableFtdItem:", err);
+          console.error("Database error in getSelectable_Ftd_Item:", err);
           res.status(500).send({ error: err.message });
         } else {
           res.send({
@@ -63,7 +63,7 @@ exports.add_Ftd_Item = (req, res) => {
   const sql = "UPDATE item SET main_ftd_display = 1 WHERE idx = ?";
   db.query(sql, [itemId], (err, result) => {
     if (err) {
-      console.error("Database error in addItemToDisplay:", err);
+      console.error("Database error in add_Ftd_Item:", err);
       res.status(500).send({ error: err.message });
     } else {
       res.status(200).send({
@@ -79,7 +79,7 @@ exports.remove_Ftd_Item = (req, res) => {
   const sql = "UPDATE item SET main_ftd_display = 0 WHERE idx = ?";
   db.query(sql, [itemId], (err, result) => {
     if (err) {
-      console.error("Database error in hideFtdItem:", err);
+      console.error("Database error in remove_Ftd_Item:", err);
       res.status(500).send({ error: err.message });
     } else {
       res
@@ -101,7 +101,7 @@ exports.getSelected_Norm_Item = (req, res) => {
     "SELECT idx, itemname, price, sale, attach, main_display FROM item WHERE main_display = 1 ORDER BY idx DESC;";
   db.query(sql, (err, results) => {
     if (err) {
-      console.error("Database error in getSelectable_Items:", err);
+      console.error("Database error in getSelected_Norm_Item:", err);
       res.status(500).send({ error: err.message });
     } else {
       res.send(results);
@@ -125,12 +125,12 @@ exports.getSelectable_Norm_Item = (req, res) => {
 
   db.query(countSql, (err, countResults) => {
     if (err) {
-      console.error("Database error in getSelectableFtdItem count:", err);
+      console.error("Database error in getSelectable_Norm_Item count:", err);
       res.status(500).send({ error: err.message });
     } else {
       db.query(sql, [offset, limit], (err, results) => {
         if (err) {
-          console.error("Database error in getSelectableFtdItem:", err);
+          console.error("Database error in getSelectable_Norm_Item:", err);
           res.status(500).send({ error: err.message });
         } else {
           res.send({
@@ -153,7 +153,7 @@ exports.add_Norm_Item = (req, res) => {
   const sql = "UPDATE item SET main_display = 1 WHERE idx = ?";
   db.query(sql, [itemId], (err, result) => {
     if (err) {
-      console.error("Database error in addItemToDisplay:", err);
+      console.error("Database error in add_Norm_Item:", err);
       res.status(500).send({ error: err.message });
     } else {
       res.status(200).send({
@@ -169,7 +169,7 @@ exports.remove_Norm_Item = (req, res) => {
   const sql = "UPDATE item SET main_display = 0 WHERE idx = ?";
   db.query(sql, [itemId], (err, result) => {
     if (err) {
-      console.error("Database error in hideFtdItem:", err);
+      console.error("Database error in remove_Norm_Item:", err);
       res.status(500).send({ error: err.message });
     } else {
       res
@@ -193,7 +193,7 @@ exports.getSelected_Event = (req, res) => {
     "SELECT idx, event_title, event_desc, filename, main_display FROM events WHERE main_display = 1 ORDER BY idx DESC;";
   db.query(sql, (err, results) => {
     if (err) {
-      console.error("Database error in getSelectable_Items:", err);
+      console.error("Database error in getSelected_Event:", err);
       res.status(500).send({ error: err.message });
     } else {
       res.send(results);
@@ -217,12 +217,12 @@ exports.getSelectable_Event = (req, res) => {
 
   db.query(countSql, (err, countResults) => {
     if (err) {
-      console.error("Database error in getSelectableFtdItem count:", err);
+      console.error("Database error in getSelectable_Event count:", err);
       res.status(500).send({ error: err.message });
     } else {
       db.query(sql, [offset, limit], (err, results) => {
         if (err) {
-          console.error("Database error in getSelectableFtdItem:", err);
+          console.error("Database error in getSelectable_Event:", err);
           res.status(500).send({ error: err.message });
         } else {
           res.send({
@@ -245,7 +245,7 @@ exports.add_Event = (req, res) => {
   const sql = "UPDATE events SET main_display = 1 WHERE idx = ?";
   db.query(sql, [eventId], (err, result) => {
     if (err) {
-      console.error("Database error in addItemToDisplay:", err);
+      console.error("Database error in add_Event:", err);
       res.status(500).send({ error: err.message });
     } else {
       res.status(200).send({
@@ -261,7 +261,7 @@ exports.remove_Event = (req, res) => {
   const sql = "UPDATE events SET main_display = 0 WHERE idx = ?";
   db.query(sql, [eventId], (err, result) => {
     if (err) {
-      console.error("Database error in hideFtdItem:", err);
+      console.error("Database error in remove_Event:", err);
       res.status(500).send({ error: err.message });
     } else {
       res.status(200).send({
@@ -281,7 +281,7 @@ exports.getSelected_Brand = (req, res) => {
     "SELECT idx, brand_name_en, brand_name_ko, brand_discount, filename, main_display FROM brands WHERE main_display = 1 ORDER BY idx DESC;";
   db.query(sql, (err, results) => {
     if (err) {
-      console.error("Database error in getSelectable_Ftd_items:", err);
+      console.error("Database error in getSelected_Brand:", err);
       res.status(500).send({ error: err.message });
     } else {
       res.send(results);
@@ -306,12 +306,12 @@ exports.getSelectable_Brand = (req, res) => {
 
   db.query(countSql, (err, countResults) => {
     if (err) {
-      console.error("Database error in getSelectableFtdItem count:", err);
+      console.error("Database error in getSelectable_Brand count:", err);
       res.status(500).send({ error: err.message });
     } else {
       db.query(sql, [offset, limit], (err, results) => {
         if (err) {
-          console.error("Database error in getSelectableFtdItem:", err);
+          console.error("Database error in getSelectable_Brand:", err);
           res.status(500).send({ error: err.message });
         } else {
           res.send({
@@ -334,7 +334,7 @@ exports.add_Brand = (req, res) => {
   const sql = "UPDATE brands SET main_display = 1 WHERE idx = ?";
   db.query(sql, [brandId], (err, result) => {
     if (err) {
-      console.error("Database error in addItemToDisplay:", err);
+      console.error("Database error in add_Brand:", err);
       res.status(500).send({ error: err.message });
     } else {
       res.status(200).send({
@@ -350,11 +350,102 @@ exports.remove_Brand = (req, res) => {
   const sql = "UPDATE brands SET main_display = 0 WHERE idx = ?";
   db.query(sql, [brandId], (err, result) => {
     if (err) {
-      console.error("Database error in hideFtdItem:", err);
+      console.error("Database error in remove_Brand:", err);
       res.status(500).send({ error: err.message });
     } else {
       res.status(200).send({
         message: "해당상품을 메인화면 강조상품 레이아웃에서 제거하였습니다.",
+      });
+    }
+  });
+};
+
+
+
+
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+// 쿠폰.배너  - 메인디스플레이 main_display =1 불러오기 (사용자,관리자)
+exports.getSelected_Coupon = (req, res) => {
+  const sql =
+    "SELECT idx, coupon_title, coupon_state, filename, main_display FROM coupons WHERE main_display = 1 ORDER BY idx DESC;";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Database error in getSelected_Coupon:", err);
+      res.status(500).send({ error: err.message });
+    } else {
+      res.send(results);
+    }
+  });
+};
+
+
+// 쿠폰.배너  - 메인디스플레이 main_display 값이 0인 상품가져오기 & 페이징처리
+exports.getSelectable_Coupon = (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
+  const sql = `SELECT idx, coupon_title, coupon_state, filename, main_display FROM coupons
+               WHERE main_display = 0
+               ORDER BY idx DESC
+               LIMIT ?, ?;`;
+
+  const countSql = `SELECT COUNT(idx) AS totalItems FROM coupons WHERE main_display = 0;`;
+
+  db.query(countSql, (err, countResults) => {
+    if (err) {
+      console.error("Database error in getSelectable_Coupon count:", err);
+      res.status(500).send({ error: err.message });
+    } else {
+      db.query(sql, [offset, limit], (err, results) => {
+        if (err) {
+          console.error("Database error in getSelectable_Coupon:", err);
+          res.status(500).send({ error: err.message });
+        } else {
+          res.send({
+            items: results,
+            totalItems: countResults[0].totalItems,
+            totalPages: Math.ceil(countResults[0].totalItems / limit),
+            currentPage: page,
+          });
+        }
+      });
+    }
+  });
+};
+
+
+
+// 쿠폰.배너 메인 디스플레이에 추가(main_display 값을 1으로 변경)
+exports.add_Coupon = (req, res) => {
+  const couponId = req.params.couponId;
+  const sql = "UPDATE coupons SET main_display = 1 WHERE idx = ?";
+  db.query(sql, [couponId], (err, result) => {
+    if (err) {
+      console.error("Database error in add_Coupon:", err);
+      res.status(500).send({ error: err.message });
+    } else {
+      res.status(200).send({
+        message: "해당쿠폰을 메인화면 레이아웃에서 추가하였습니다.",
+      });
+    }
+  });
+};
+
+// 쿠폰.배너 메인 디스플레이에서 제거 (main_display 값을 0으로 변경)
+exports.remove_Coupon = (req, res) => {
+  const couponId = req.params.couponId;
+  const sql = "UPDATE coupons SET main_display = 0 WHERE idx = ?";
+  db.query(sql, [couponId], (err, result) => {
+    if (err) {
+      console.error("Database error in remove_Coupon:", err);
+      res.status(500).send({ error: err.message });
+    } else {
+      res.status(200).send({
+        message: "해당쿠폰을 메인화면 레이아웃에서 제거하였습니다.",
       });
     }
   });

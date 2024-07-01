@@ -29,7 +29,68 @@ exports.itemSearch = (req, res) => {
   });
 };
 
-// 관리자/사용자페이지 상품목록
+
+// 사용자페이지 상품목록
+exports.itemGet = (req, res) => {
+  const itembrand_en = req.query.itembrand_en;
+  const type = req.query.type || "";
+  const categoryCode1 = req.query.categoryCode1;
+  const categoryCode2 = req.query.categoryCode2;
+  const searchTerm = req.query.searchTerm;
+
+  let whereClause = " WHERE 1=1";
+  let queryParams = [];
+
+  // 카테고리 코드 필터
+  if (categoryCode1) {
+    whereClause += " AND categoryCode1 = ?";
+    queryParams.push(categoryCode1);
+  }
+
+  if (categoryCode2) {
+    whereClause += " AND categoryCode2 = ?";
+    queryParams.push(categoryCode2);
+  }
+
+  // 브랜드 이름 필터
+  if (itembrand_en && itembrand_en !== "null") {
+    whereClause += " AND itembrand_en = ?";
+    queryParams.push(itembrand_en);
+  }
+
+  // 상품 태그 필터 (BEST, NEW, SALE)
+  if (type) {
+    if (type === "BEST" || type === "NEW") {
+      whereClause += " AND labels LIKE ?";
+      queryParams.push(`%${type}%`);
+    } else if (type === "SALE") {
+      whereClause += " AND sale <> 0";
+    }
+  }
+
+  // 검색어 필터 - "null" 문자열 또는 빈 문자열이 아닌 경우에만 적용
+  if (searchTerm && searchTerm !== "null" && searchTerm.trim() !== "") {
+    whereClause += " AND (itemname LIKE ? OR itemname_en LIKE ?)";
+    queryParams.push(`%${searchTerm}%`);
+    queryParams.push(`%${searchTerm}%`);
+  }
+
+  let listSQL = `SELECT *, stock_status FROM item${whereClause} ORDER BY idx DESC;`;
+  console.log("Final SQL Query:", listSQL);
+  console.log("Query Parameters:", queryParams);
+
+  db.query(listSQL, queryParams, (err, items) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send({ message: "Database query error" });
+    }
+    res.send({ items });
+  });
+};
+
+
+
+// 관리자 상품목록
 exports.goodsManager = (req, res) => {
   const page = parseInt(req.query.page, 10) || 1;
   const offset = parseInt(req.query.offset, 10) || 10;

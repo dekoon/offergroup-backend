@@ -9,5 +9,7 @@ router.post("/idDuplicatonChk", authController.checkIdDuplication);
 router.post("/login", authController.login);
 router.get("/mypage/:userId", authController.getMyPage);
 router.post("/mypage/edit/:userId", authController.editMyPage);
+//비밀번호변경
+router.post("/mypage/change-password/:userId", authController.changePassword);
 
 module.exports = router;

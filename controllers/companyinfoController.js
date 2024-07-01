@@ -63,7 +63,8 @@ exports.createCompanyinfo = async (req, res) => {
         sql = `
           UPDATE company_info
           SET
-            Co_phone=?,
+          Co_name=?,
+          Co_phone=?,
             Co_email=?,
             Co_address=?,
             ceo_name=?,
@@ -75,6 +76,7 @@ exports.createCompanyinfo = async (req, res) => {
             Biz_day=?
         `;
         values = [
+          Co_name,
           Co_phone,
           Co_email,
           Co_address,

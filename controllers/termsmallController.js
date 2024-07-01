@@ -30,59 +30,94 @@ exports.getTermsMall = async (req, res) => {
   }
 };
 
-
-exports.createTermsMall = async (req, res) => {
+exports.createPersonalInfo = async (req, res) => {
   try {
-    const {
-      personal_info,
-      service_use,
-      company_intro,
-    } = req.body;
-
-    // 기존 정보가 있는지 확인
-    const selectSql = `SELECT * FROM terms_mall`;
-    db.query(selectSql, (err, rows) => {
+    const { personal_info } = req.body;
+    const selectSql = `SELECT personal_info FROM terms_mall`;
+    db.query(selectSql, async (err, rows) => {
       if (err) {
         console.error(err);
-        res.status(500).send("Error checking company info");
-        return;
+        return res.status(500).send("Error checking personal info");
       }
 
-      // 기존 정보가 있으면 업데이트, 없으면 새로 생성
-      let sql, values;
+      let sql;
       if (rows.length > 0) {
-        sql = `
-          UPDATE terms_mall
-          SET
-            personal_info=?,
-            service_use=?,
-            company_intro=?
-        `;
-        values = [
-          personal_info,
-          service_use,
-          company_intro
-        ];
+        sql = `UPDATE terms_mall SET personal_info=?`;
       } else {
-        sql = `
-          INSERT INTO terms_mall
-            (personal_info, service_use, company_intro)
-          VALUES (?, ?, ?)
-        `;
-        values = [
-          personal_info,
-          service_use,
-          company_intro
-        ];
+        sql = `INSERT INTO terms_mall (personal_info) VALUES (?)`;
       }
 
-      db.query(sql, values, (err, result) => {
+      db.query(sql, [personal_info], (err, result) => {
         if (err) {
           console.error(err);
-          res.status(500).send("Error saving company info");
-          return;
+          return res.status(500).send("Error saving personal info");
         }
-        res.send("Company info saved successfully");
+        res.send("Personal info saved successfully");
+      });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+};
+
+//
+exports.createServiceUse = async (req, res) => {
+  try {
+    const { service_use } = req.body;
+    const selectSql = `SELECT service_use FROM terms_mall`;
+    db.query(selectSql, async (err, rows) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("Error checking service use");
+      }
+
+      let sql;
+      if (rows.length > 0) {
+        sql = `UPDATE terms_mall SET service_use=?`;
+      } else {
+        sql = `INSERT INTO terms_mall (service_use) VALUES (?)`;
+      }
+
+      db.query(sql, [service_use], (err, result) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send("Error saving service use");
+        }
+        res.send("Service use saved successfully");
+      });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+};
+
+
+//
+exports.createCompanyIntro = async (req, res) => {
+  try {
+    const { company_intro } = req.body;
+    const selectSql = `SELECT company_intro FROM terms_mall`;
+    db.query(selectSql, async (err, rows) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("Error checking company intro");
+      }
+
+      let sql;
+      if (rows.length > 0) {
+        sql = `UPDATE terms_mall SET company_intro=?`;
+      } else {
+        sql = `INSERT INTO terms_mall (company_intro) VALUES (?)`;
+      }
+
+      db.query(sql, [company_intro], (err, result) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send("Error saving company intro");
+        }
+        res.send("Company intro saved successfully");
       });
     });
   } catch (error) {

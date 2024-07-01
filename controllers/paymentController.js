@@ -92,9 +92,10 @@ exports.saveMultiOrder = async (req, res) => {
             orderTime,
             item.selectedMonth,
             item.monthlyPayment,
+            item.orderType,
           ];
 
-          const sql = `INSERT INTO orders (orderNum, itemIdx, userId, username, phone, address, dest_name, dest_phone, dest_email, dest_zip, dest_address, orderedItem, totalPrice, orderTime, selectedMonth, monthlyPayment) VALUES ?`;
+          const sql = `INSERT INTO orders (orderNum, itemIdx, userId, username, phone, address, dest_name, dest_phone, dest_email, dest_zip, dest_address, orderedItem, totalPrice, orderTime, selectedMonth, monthlyPayment, orderType) VALUES ?`;
 
           // 데이터베이스에 주문 정보 삽입
           db.query(sql, [[values]], (err) => {

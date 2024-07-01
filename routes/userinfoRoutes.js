@@ -16,4 +16,11 @@ router.get("/user/:userId", userController.getUserInfo);
 // 사용자 정보 업데이트
 router.put("/user/:userId", userController.updateUserInfo);
 
+// 아이디 찾기
+router.post("/findUserId", userController.findUserId);
+
+// 비밀번호 찾기
+router.post("/findUserPassword", userController.findUserPassword);
+
+
 module.exports = router;

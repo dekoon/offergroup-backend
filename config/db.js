@@ -14,10 +14,10 @@ const pool = mysql.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   waitForConnections: true,
-  connectionLimit: 0,
+  connectionLimit: 10,
   queueLimit: 0,
-  acquireTimeout: 10000,
-  connectTimeout: 10000,
+  acquireTimeout: 10000, // 설정 수정
+  connectTimeout: 10000, // 설정 수정
   dateStrings: "date", // 날짜 문자열 설정
 });
 
@@ -31,17 +31,18 @@ pool.getConnection((err, connection) => {
   }
 });
 
-// 연결 유지 쿼리 실행
-const keepAliveQuery = async () => {
-  try {
-    const connection = await pool.getConnection();
-    await connection.query("SELECT 1");
-    connection.release();
-  } catch (error) {
-    console.error("Error keeping the connection alive:", error);
-  }
-};
+// // 연결 유지 쿼리 실행
+// const keepAliveQuery = async () => {
+//   try {
+//     const connection = await pool.getConnection();
+//     await connection.query("SELECT 1");
+//     connection.release();
+//     console.log("연결 유지 쿼리 성공");
+//   } catch (error) {
+//     console.error("연결을 유지하는 동안 오류가 발생했습니다:", error);
+//   }
+// };
 
-setInterval(keepAliveQuery, 60000); // 1분마다 연결 유지 쿼리 실행
+// setInterval(keepAliveQuery, 60000); // 1분마다 연결 유지 쿼리 실행
 
 module.exports = pool; // 모듈 내보내기 변경

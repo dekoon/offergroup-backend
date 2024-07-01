@@ -20,4 +20,7 @@ router.put("/update/:idx", upload.none(), adminController.update);
 // 관리자 삭제
 router.delete("/delete/:idx", adminController.delete);
 
+//관리자로그인
+router.post("/login", adminController.login);
+
 module.exports = router;

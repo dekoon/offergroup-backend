@@ -6,6 +6,7 @@ const upload = require("../config/multerConfig"); // Assuming multerConfig is pr
 
 router.get("/main", itemsController.mainPageItems);
 router.get("/itemSearch", itemsController.itemSearch);
+router.get("/itemGet", itemsController.itemGet);
 router.get("/goodsManager", itemsController.goodsManager);
 
 router.post(

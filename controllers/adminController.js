@@ -77,7 +77,7 @@ exports.update = (req, res) => {
     [id, pw, adminname, email, phone, auth, idx],
     (err) => {
       if (err) return res.status(500).send({ error: err });
-      res.send({ message: "FAQ updated successfully" });
+      res.send({ message: "Admin updated successfully" });
     }
   );
 };
@@ -87,6 +87,31 @@ exports.delete = (req, res) => {
 
   db.query("DELETE FROM admin WHERE idx = ?", [idx], (err) => {
     if (err) return res.status(500).send({ error: err });
-    res.send({ message: "FAQ deleted successfully" });
+    res.send({ message: "Admin deleted successfully" });
+  });
+};
+
+
+//관리자로그인
+// 관리자 로그인
+exports.login = (req, res) => {
+  const { id, pw } = req.body;
+  const sql = "SELECT * FROM admin WHERE id = ? AND pw = ?";
+  db.query(sql, [id, pw], (err, result) => {
+    if (err) {
+      res.status(500).send({ message: "Database error" });
+      return;
+    }
+    if (result.length > 0) {
+      // 로그인 성공
+      res.send({
+        success: true,
+        message: "Login successful",
+        userId: result[0].id,  // 사용자 ID 추가
+        adminName: result[0].adminname  // 사용자 이름 추가
+      });
+    } else {
+      res.status(401).send({ success: false, message: "Invalid credentials" });
+    }
   });
 };

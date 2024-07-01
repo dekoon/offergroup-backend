@@ -135,3 +135,49 @@ exports.editMyPage = (req, res) => {
     }
   );
 };
+
+// 비밀번호 변경
+exports.changePassword = (req, res) => {
+  const userId = req.params.userId;
+  const { currentPassword, newPassword } = req.body;
+
+  console.log("Requested user ID:", userId); // 로그 추가
+
+  const sql = "SELECT pw FROM user WHERE id = ?";
+  db.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error("Database query error:", err);
+      return res.status(500).send("서버 오류 발생.");
+    }
+
+    console.log("Database results:", results); // 로그 추가
+
+    if (results.length > 0) {
+      const hash = results[0].pw;
+      bcrypt.compare(currentPassword, hash, (err, isMatch) => {
+        if (err) {
+          console.error("Bcrypt comparison error:", err);
+          return res.status(500).send("비밀번호 검증 중 오류 발생.");
+        }
+
+        if (isMatch) {
+          const newHash = bcrypt.hashSync(newPassword, saltRounds);
+          const updateSql = "UPDATE user SET pw = ? WHERE id = ?";
+          db.query(updateSql, [newHash, userId], (err, result) => {
+            if (err) {
+              console.error("Error updating password:", err);
+              return res
+                .status(500)
+                .send("비밀번호 변경 중 오류가 발생했습니다.");
+            }
+            res.send({ status: 200, message: "비밀번호가 변경되었습니다." });
+          });
+        } else {
+          res.status(400).send("현재 비밀번호가 일치하지 않습니다.");
+        }
+      });
+    } else {
+      res.status(404).send("사용자를 찾을 수 없습니다.");
+    }
+  });
+};
