@@ -14,7 +14,6 @@ exports.register = (req, res) => {
   const address = req.body.address;
   const detailAddress = req.body.detailAddress;
 
-
   let sql =
     "INSERT INTO user VALUES(NULL,?,?,?,?,?,?,?,'일반회원',now());";
   bcrypt.hash(req.body.pw, saltRounds, (err, hash_pw) => {

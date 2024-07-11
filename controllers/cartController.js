@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const db = require("../config/db");
 const saltRounds = 10;
 
-// 장바구니에 상품 추가 장바구니에 상품 추가 (결제 유형에 따른 분류 추가)
+// 장바구니에 상품 추가(결제 유형에 따른 분류 추가)
 exports.addToCart = (req, res) => {
     const {userId, idx} = req.params;
     const {
@@ -15,8 +15,7 @@ exports.addToCart = (req, res) => {
         paymentType
     } = req.body;
 
-    let sql = "INSERT INTO cart(userId, itemIdx, itemCounter, itemPrice, selectedMonth, month" +
-            "lyPayment, TotalPayment, paymentType) VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
+    let sql = "INSERT INTO cart(userId, itemIdx, itemCounter, itemPrice, selectedMonth, monthlyPayment, TotalPayment, paymentType) VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
 
     db.query(sql, [
         userId,

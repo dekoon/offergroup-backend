@@ -5,7 +5,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const mysql = require("mysql2");
-//
+
 // 연결 풀 설정
 const pool = mysql.createPool({
   host: process.env.DB_URL,
@@ -30,7 +30,7 @@ pool.getConnection((err, connection) => {
     console.error("Mysql DB 연결 실패: ", err);
   }
 });
-//
+
 // 연결 유지 쿼리 실행
 const keepAliveQuery = async () => {
   try {
@@ -41,6 +41,7 @@ const keepAliveQuery = async () => {
     console.error("Error keeping the connection alive:", error);
   }
 };
-//
+
 setInterval(keepAliveQuery, 60000); // 1분마다 연결 유지 쿼리 실행
+
 module.exports = pool; // 모듈 내보내기 변경

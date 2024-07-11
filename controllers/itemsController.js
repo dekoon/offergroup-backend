@@ -200,7 +200,7 @@ exports.generateCode = (req, res) => {
   });
 };
 
-// 상품등록
+
 // 상품등록
 exports.addItem = (req, res) => {
   console.log(req.file);
@@ -220,6 +220,13 @@ exports.addItem = (req, res) => {
     sale,
     labels,
     contents,
+    info_kcauth,
+    info_madein,
+    info_manufacturer,
+    info_releasedate,
+    info_as,
+    info_shipping,
+    info_return,
   } = req.body;
 
   // categoryCode1, categoryCode2 상태를 사용하여 idx 값 가져오기
@@ -235,7 +242,7 @@ exports.addItem = (req, res) => {
     req.files && req.files.attach3 ? req.files.attach3[0].filename : null;
 
   let sql =
-    "INSERT INTO item (itemname, itemname_en, itembrand, itembrand_en, itemCategory1, itemCategory2, categoryCode1, categoryCode2, stock_status, itemCode, price, pricemonthly, discount, sale, labels, attach, attach2, attach3, contents, regdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW());";
+    "INSERT INTO item (itemname, itemname_en, itembrand, itembrand_en, itemCategory1, itemCategory2, categoryCode1, categoryCode2, stock_status, itemCode, price, pricemonthly, discount, sale, labels, attach, attach2, attach3, contents, info_kcauth, info_madein, info_manufacturer, info_releasedate, info_as, info_shipping, info_return, regdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW());";
 
   db.query(
     sql,
@@ -259,6 +266,13 @@ exports.addItem = (req, res) => {
       filename2,
       filename3,
       contents,
+      info_kcauth,
+      info_madein,
+      info_manufacturer,
+      info_releasedate,
+      info_as,
+      info_shipping,
+      info_return,
     ],
     (err) => {
       if (err) {
@@ -357,6 +371,13 @@ exports.updateItem = (req, res) => {
     sale,
     labels,
     contents,
+    info_kcauth,
+    info_madein,
+    info_manufacturer,
+    info_releasedate,
+    info_as,
+    info_shipping,
+    info_return,
   } = req.body;
   let filename = req.file ? req.file.filename : null; // 파일이 업로드되지 않은 경우를 고려하여 filename 변수를 설정합니다.
 
@@ -425,6 +446,37 @@ exports.updateItem = (req, res) => {
     updates.push("contents = ?");
     values.push(contents);
   }
+
+    if (info_kcauth) {
+      updates.push("info_kcauth = ?");
+      values.push(info_kcauth);
+    }
+      if (info_madein) {
+        updates.push("info_madein = ?");
+        values.push(info_madein);
+      }
+        if (info_manufacturer) {
+          updates.push("info_manufacturer = ?");
+          values.push(info_manufacturer);
+        }
+          if (info_releasedate) {
+            updates.push("info_releasedate = ?");
+            values.push(info_releasedate);
+          }
+
+          if (info_as) {
+            updates.push("info_as = ?");
+            values.push(info_as);
+          }
+          if (info_shipping) {
+            updates.push("info_shipping = ?");
+            values.push(info_shipping);
+          }
+          if (info_return) {
+            updates.push("info_return = ?");
+            values.push(info_return);
+          }
+
 
   sql += updates.join(", ");
   sql += ", regdate = now() ";

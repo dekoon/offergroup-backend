@@ -49,7 +49,6 @@ function generateOrderNum(callback) {
   });
 }
 
-
 exports.saveMultiOrder = async (req, res) => {
   const {
     userId,
@@ -115,8 +114,6 @@ exports.saveMultiOrder = async (req, res) => {
     res.status(500).send(error);
   }
 };
-
-
 
 exports.updateStockStatusToZero = (req, res) => {
   const userId = req.params.userId;
