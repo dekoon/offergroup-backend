@@ -1,6 +1,22 @@
 //controllers/paymentController.js
 const db = require("../config/db");
 
+exports.savePgInfo = (orderId, amount, paymentKey) => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      INSERT INTO orders (orderId, amount, paymentKey)
+      VALUES (?, ?, ?)
+    `;
+
+    db.query(query, [orderId, amount, paymentKey], (err, results) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(results);
+    });
+  });
+};
+
 exports.payMultiItems = (req, res) => {
   let userSQL = "SELECT * FROM user WHERE id=?;";
   db.query(userSQL, [req.params.userId], (err, user) => {
@@ -62,6 +78,16 @@ exports.saveMultiOrder = async (req, res) => {
     dest_address,
     orderedItems: items,
   } = req.body;
+
+  console.log("📌 전체 요청 데이터:", req.body); // 전체 데이터 확인
+  console.log("📌 받은 주문 데이터:", req.body.orderedItems); // 주문 데이터 확인
+  // items가 배열인지 확인
+  if (!items || !Array.isArray(items)) {
+    return res.status(400).json({
+      message: "orderedItems가 올바르게 전달되지 않았습니다.",
+      error: "orderedItems must be an array.",
+    });
+  }
 
   try {
     // 주문 항목별로 독립적인 주문번호 생성 및 데이터 저장
