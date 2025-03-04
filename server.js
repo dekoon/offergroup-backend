@@ -123,7 +123,8 @@ app.post("/confirm/widget", async function (req, res) {
     }
 
     // 성공 로직 추가
-    await savePgInfo(orderId, amount, paymentKey); // DB에 저장
+    // 결제 승인 후 DB에 저장 시작
+    //await paymentController.saveMultiOrder(req, res, result);
 
     // ✅ 결제 승인 성공 응답
     res.status(200).json({
