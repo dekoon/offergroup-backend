@@ -77,6 +77,9 @@ exports.saveMultiOrder = async (req, res) => {
     dest_zip,
     dest_address,
     orderedItems: items,
+    orderId,
+    amount,
+    paymentKey,
   } = req.body;
 
   console.log("📌 전체 요청 데이터:", req.body); // 전체 데이터 확인
@@ -118,9 +121,12 @@ exports.saveMultiOrder = async (req, res) => {
             item.selectedMonth,
             item.monthlyPayment,
             item.orderType,
+            orderId,
+            amount,
+            paymentKey,
           ];
 
-          const sql = `INSERT INTO orders (orderNum, itemIdx, userId, username, phone, address, dest_name, dest_phone, dest_email, dest_zip, dest_address, orderedItem, totalPrice, orderTime, selectedMonth, monthlyPayment, orderType) VALUES ?`;
+          const sql = `INSERT INTO orders (orderNum, itemIdx, userId, username, phone, address, dest_name, dest_phone, dest_email, dest_zip, dest_address, orderedItem, totalPrice, orderTime, selectedMonth, monthlyPayment, orderType, orderId, amount, paymentKey) VALUES ?`;
 
           // 데이터베이스에 주문 정보 삽입
           db.query(sql, [[values]], (err) => {
@@ -138,6 +144,43 @@ exports.saveMultiOrder = async (req, res) => {
       .send({ status: 201, message: "주문이 성공적으로 처리되었습니다." });
   } catch (error) {
     res.status(500).send(error);
+  }
+};
+
+exports.updateOrder = async (req, res) => {
+  const { orderId, amount, paymentKey } = req.body;
+
+  if (!orderId || !amount || !paymentKey) {
+    return res.status(400).json({ message: "필수 정보가 누락되었습니다." });
+  }
+
+  try {
+    // 바로 UPDATE 쿼리를 실행하여 성능 개선
+    const sqlUpdate = `
+      UPDATE orders
+      SET amount = ?, paymentKey = ?
+      WHERE orderId = ?
+    `;
+
+    db.query(sqlUpdate, [amount, paymentKey, orderId], (err, updateResults) => {
+      if (err) {
+        console.error("❌ 결제 정보 업데이트 오류:", err);
+        return res.status(500).json({ message: "결제 정보 업데이트 실패" });
+      }
+
+      if (updateResults.affectedRows === 0) {
+        return res.status(404).json({ message: "주문을 찾을 수 없습니다." });
+      }
+
+      console.log("✅ 결제 정보 업데이트 완료:", updateResults);
+      return res.status(200).json({
+        message: "주문 결제 정보 업데이트 성공",
+        updatedOrder: updateResults,
+      });
+    });
+  } catch (error) {
+    console.error("❌ 결제 정보 업데이트 실패:", error);
+    return res.status(500).json({ message: "서버 오류 발생" });
   }
 };
 
